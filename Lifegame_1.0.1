@@ -1,0 +1,112 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+#include <memory.h>
+#include <unistd.h>
+
+#define G_SIZE 150
+#define POSSIBILITY 60
+#define STEP_TIME (1)
+
+//extend the matrix by one line
+int game_buf[G_SIZE+1][G_SIZE+1];
+
+void getnext(char src[G_SIZE][G_SIZE])
+{
+    int i,j,_i,_j;
+    memset((void*)game_buf,0,sizeof(game_buf));
+    system("clear");
+
+    printf("*** gaming ***\n");
+
+
+    for(i=1;i<G_SIZE-1;i++)
+    {
+        for(j=1;j<G_SIZE-1;j++)
+        {
+            if(src[i][j]=='#')
+            {
+                for(_i=i-1;_i<i+2;_i++)
+                {
+                    for(_j=j-1;_j<j+2;_j++)
+                    {
+                        if(!(_i==i&&_j==j))
+                        {
+                            game_buf[_i][_j]++;
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    for(i=0;i<G_SIZE;i++)
+    {
+        for(j=0;j<G_SIZE;j++)
+        {
+            if(src[i][j]=='#')
+            {
+                if(!(game_buf[i][j]==2||game_buf[i][j]==3))
+                {
+                    src[i][j]='-';
+                }
+            }
+            else
+            {
+                if(game_buf[i][j]==3)
+                {
+                    src[i][j]='#';
+                }
+            }
+            printf("%2c",src[i][j]);
+        }
+        printf("\n");
+    }
+}
+
+
+
+int main()
+{
+    int i,j,tem;
+    time_t tm;
+    char* p;
+    char game[G_SIZE][G_SIZE];
+
+    system("clear");
+    srand((unsigned int)time(&tm));
+    printf("** init game **\n");
+
+
+    i=0;
+    for(p=game[0];p<game[0]+G_SIZE*G_SIZE;p++)
+    {
+        tem=rand();
+        if(tem%100+1>POSSIBILITY)
+        {
+            *p='#';
+        }
+        else
+        {
+            *p='-';
+        }
+        printf("%2c",*p);
+        i++;
+        if(i==G_SIZE)
+        {
+            printf("\n");
+            usleep(50000);
+            i=0;
+        }
+    }
+    printf("\nPress any key to start:");
+    getchar();
+    while(1)
+    {
+        //sleep STEP_TIME;
+        usleep(100000);
+        getnext(game);
+    }
+    return 0;
+}
